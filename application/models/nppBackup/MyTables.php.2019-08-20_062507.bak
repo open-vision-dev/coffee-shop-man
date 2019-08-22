@@ -1,0 +1,23 @@
+<?php
+-defined('BASEPATH') OR exit('No direct script access allowed');
+	class MyTables extends CI_Model
+	{
+		public function __construct()
+		{
+			$this->load->database();
+		}
+		public function get_wh_by_id($ID)
+		{
+			$parms = array("ID"=>$$this->db->escape_str($ID));
+			$query = $this->db->get_where("WH",$parms);
+			
+		}
+		public function get_all_wh()
+		{
+			$query = $this->
+		}
+		
+	}
+
+
+?>

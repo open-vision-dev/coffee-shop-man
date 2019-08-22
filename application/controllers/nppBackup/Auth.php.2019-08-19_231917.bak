@@ -1,0 +1,27 @@
+<?php
+class Auth extends CI_Controller
+{
+
+	public function __construct()
+	{
+		$this->load->model("MyUsersModel");
+		$this->load->library("input");
+	}
+
+	public function login()
+	{
+		if ($this->form_validation->run() == FALSE)
+                {
+                        $user = $this->
+                }
+                else
+                {
+                        $this->load->view('formsuccess');
+                }
+	}
+
+	
+}
+
+
+?>

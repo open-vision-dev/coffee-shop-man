@@ -1,0 +1,128 @@
+<?php
+defined("BASEPATH") OR exit("not direct access");
+class RenderScript extends CI_Model
+	{
+		public function __construct()
+		{
+			
+			parent::__construct();
+			$this->load->model('MyTables','tables');
+			
+		}
+		public function format_users($users)
+		{
+			$RVIEW =<<<VIEW
+			<table class='table table-responsive table-striped'>
+			<thead>
+				<td>
+				ID
+				</td>
+				<td>
+				NAME
+				</td>
+				<td>
+				HASH
+				</td>
+			</thead>
+			
+			
+VIEW;
+			foreach($users as $user)
+			{
+				$ID = $user['ID'];
+				$NAME = $user['USERNAME'];
+				$PWD = $user['PWD'];
+				$RVIEW .="<tr> <td> $ID </td> <td>$NAME </td> <td>$PWD</td> ";
+				
+			}
+			$RVIEW .= "</table>";
+			return $RVIEW;
+		}
+		public function format_wh_table()
+		{
+			
+			$DATA = $this -> tables -> get_all_wh();
+			//var_dump($DATA);
+		//	die();
+			$VIEW = <<<TABLE
+			<table  class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+				<thead>
+					<tr>
+						<td><input type='checkbox' class='' id='select-all-wh' /></td>
+						<td>رقم المنتج</td>
+						<td>الاسم العربي</td>
+						<td>الاسم الانجليزي</td>
+						<td>الكمية</td>
+						<td>المقياس</td>
+						<td>الصلاحية</td>
+						<td>صورة المنتج</td>
+						<td>الاصناف</td>
+						<td>الخيارات</td>
+					</tr>
+				</thead>
+TABLE;
+			foreach($DATA AS $ITEM )
+			{
+
+				$ID = $ITEM['ID'];
+				$ARNAME = $ITEM['ARNAME'];
+				$ENNAME = $ITEM['ENNAME'];
+				$WUNIT = $ITEM['WUNIT'];
+				$WUNITSIZE = $ITEM['WUNITSIZE'];
+				$EDITLINK = site_link_to("Admin/wh/edit/$ID");
+				$VIEWLINK =site_link_to("Admin/wh/view/$ID");
+				$UNLINK  = site_link_to("Admin/wh/unlink/$ID");
+				$EXPIRING = ($ITEM['EXPIRING'] == 0) ? "قابل للانتهاء" : "غير قابل للانتهاء";
+				$PIC = "<img src='data:image/jpg;base64," .($ITEM['PIC']) . " ' style='width:50px;height:40px' / >";
+				$CATNAME = $this->tables->get_wh_cat_by_id($ITEM['CAT'])['NAME'];
+				$CATID = $ITEM['CAT'];
+				$OPTION = <<<DR
+				<div class="dropdown">
+					  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						الاعدادات
+					  </button>
+					  <div class="dropdown-menu" aria-labelledby="dropdown">
+						<a href='$EDITLINK' class="dropdown-item" type="button">تعديل</a>
+						<a href='$VIEWLINK' class="dropdown-item" type="button">حذف</a>
+						<a href='$UNLINK' class="dropdown-item" type="button">عرض بيانات المنتج في المخزن</a>
+					  </div>
+				</div>
+
+DR;
+				$VIEW .=<<<TR
+				<tr wh-id='$ID'>
+					<td><input type='checkbox' class='' id='select-all-wh' /></td>
+					<td>$ID</td>
+					<td>  $ARNAME  </td>
+					<td>  $ENNAME  </td>
+					<td>  $WUNIT  </td>
+					<td>   $WUNITSIZE </td>
+					<td>   $EXPIRING </td>
+					<td>   $PIC </td>
+					<td cat-id='$CATID'>   $CATNAME </td>
+					<td>   $OPTION </td>
+				
+				</tr>
+TR;
+				}
+			$VIEW .="</table>";
+			return $VIEW;
+		}
+		public function format_wh_edit_form($ID)
+		{
+			$WH_DATA = $this->tables->get_wh_by_id($ID);
+			$WH_CAT_DATA = $this->tables->get_all_wh_cat($ID);
+			$view=form_open(site_link_to("Admin/wh/edit/post"))
+			$select_box = '<div class="btn-group" role="group" aria-label="Basic example">';
+			foreach($WH_CAT_DATA as $WHCAT)
+			{
+				$select_box.= "<input class='btn btn-secondary' type='button' value='$NAME' >"
+			}
+			
+			return "<pre><code>" .var_export($WH_CAT_DATA,true)."</code>";
+			
+		}
+		
+	
+	}
+?>

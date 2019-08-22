@@ -1,0 +1,16 @@
+<?php
+
+	class MyUsersModel extends CI_Model 
+	{
+		public function __construct()
+		{
+			$this->load->database();
+			$this->db->get('COFFEE');
+		}
+		public function get_all_users()
+		{
+			$query = $this->db->query("SELECT * FROM USERS ") -> result_array();
+			return $query;
+		}
+		
+	}

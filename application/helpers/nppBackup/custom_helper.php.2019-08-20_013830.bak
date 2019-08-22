@@ -1,0 +1,17 @@
+<?php
+	function lvl_based_redirect($me)
+	{
+		if($this->session->userdata('lvl') > 1 )
+			{
+				$me->load->view("admin");
+			}
+			else if ( $this->session->userdata("lvl") < 1 )
+			{
+				$me->load->view("client");
+				
+			}
+		
+	}
+
+
+?>

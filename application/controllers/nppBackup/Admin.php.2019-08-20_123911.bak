@@ -1,0 +1,12 @@
+<?php
+defined('BASEPATH') OR exit();
+class Admin extends CI_Controller
+{
+	
+	public function index($method='none',$opt=null,$opt2=null,$opt3=null)
+	{
+		
+	}
+
+}
+?>

@@ -1,0 +1,106 @@
+<?php
+defined("base_path") OR exit("");
+class RenderScript extends CI_Model
+	{
+		public function __construct()
+		{
+			
+			$this->load->model->('MyTables','tables');
+			
+		}
+		public function format_users($users)
+		{
+			$RVIEW =<<<VIEW
+			<table class='table table-responsive table-striped'>
+			<thead>
+				<td>
+				ID
+				</td>
+				<td>
+				NAME
+				</td>
+				<td>
+				HASH
+				</td>
+			</thead>
+			
+			
+VIEW;
+			foreach($users as $user)
+			{
+				$ID = $user['ID'];
+				$NAME = $user['USERNAME'];
+				$PWD = $user['PWD'];
+				$RVIEW .="<tr> <td> $ID </td> <td>$NAME </td> <td>$PWD</td> ";
+				
+			}
+			$RVIEW .= "</table>";
+			return $RVIEW;
+		}
+		public function format_wh_table()
+		{
+			$DATA = $this -> tables -> get_all_wh();
+			$VIEW = <<<TABLE
+			<table  class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+				<thead>
+					<tr>
+						<td><input type='checkbox' class='' id='select-all-wh' /></td>
+						<td>رقم المنتج</td>
+						<td>الاسم العربي</td>
+						<td>الاسم الانجليزي</td>
+						<td>الكمية</td>
+						<td>المقياس</td>
+						<td>الصلاحية</td>
+						<td>صورة المنتج</td>
+						<td>الاصناف</td>
+						<td>الخيارات</td>
+					</tr>
+				</thead>
+TABLE;
+			foreach($DATA AS $ITEM )
+			{
+				$ID = $ITEM['ID'];
+				$ARNAME = $ITEM['ARNAME'];
+				$ENNAME = $ITEM['ENNAME'];
+				$WUNIT = $ITEM['WUNIT'];
+				$WUNITSIZE = $ITEM['WUNITSIZE'];
+				$EXPIRING = ($ITEM['EXPIRING'] == 0) ? "قابل للانتهاء" : "غير قابل للانتهاء";
+				$PIC = "<img src='data:image/jpg;base64," .($ITEM['PIC']) . " ' style='width:50px;height:40px' / >";
+				$CATNAME = $this->tables->get_wh_by_id($ITEM['CAT']).$ITEM['CAT'])['NAME'];
+				$CATID =  $this->tables->get_wh_by_id($ITEM['CAT']).$ITEM['CAT'])['NAME'];;
+				$OPTION = <<<DR
+				<div class="dropdown">
+					  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						الاعدادات
+					  </button>
+					  <div class="dropdown-menu" aria-labelledby="dropdown">
+						<button class="dropdown-item" type="button">تعديل</button>
+						<button class="dropdown-item" type="button">حذف</button>
+						<button class="dropdown-item" type="button">عرض بيانات المنتج في المخزن</button>
+					  </div>
+				</div>
+
+DR;
+				$VIEW .=<<<TR
+				<tr wh-id='$ID'>
+					<td><input type='checkbox' class='' id='select-all-wh' /></td>
+					<td>$ID</td>
+					<td>  $ARNAME  </td>
+					<td>  $ENNAME  </td>
+					<td>  $WUNIT  </td>
+					<td>   $WUNITSIZE </td>
+					<td>   $EXPIRING </td>
+					<td>   $PIC </td>
+					<td cat-id='$CATID'>   $CATNAME </td>
+					<td>   $OPTION </td>
+				
+				</tr>
+TR;
+				}
+			$VIEW .="</table>";
+			return $VIEW;
+		}
+		
+	
+	}
+?>

@@ -1,0 +1,40 @@
+<?php
+
+	class MyUsersModel extends CI_Model 
+	{
+		public function __construct()
+		{
+			$this->load->database("default");
+			$this->load->library("session");
+			//$this->load->model("form_validation");
+			
+		}
+		public function get_all_users()
+		{
+			$query = $this->db->query("SELECT * FROM USERS ") -> result_array();
+			return $query;
+		}
+		public function auth_user($user , $pass )
+		{
+			$user = $this->db->escape($user);
+			$user = $this->db->escape($pass);
+			$parms = array(
+						"USERNAME" => $user ,
+						"PWD" => hash_hmac("sha512",$pass,"C-X-C",false) 
+						);
+			$query = $this->db->get_where("USERS",$parms);
+			$result = $query-> row_array ();
+			var_dump($query);
+			if($result != null)
+			{
+					$this->session->set_userdata("name", $result->USERNAME);
+					$this->session->set_userdata("lvl", $result->LVL);
+					$this->session->set_userdata("id", $result->ID);
+					return true;
+			}
+			return false;
+			
+		}
+		
+		
+	}

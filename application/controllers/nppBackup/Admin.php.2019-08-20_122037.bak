@@ -1,0 +1,13 @@
+<?php
+defined('BASEPATH') OR exit();
+class Admin extends CI_Controller
+{
+	
+	public function index($method='none',$opt=null,$opt2=null,$opt3=null)
+	{
+		echo "Welcome $meth , OPERATION = $opt , PARM1 = $opt2  , PARM 2 = $opt3 ";
+	//this->load('admin');
+	}
+
+}
+?>

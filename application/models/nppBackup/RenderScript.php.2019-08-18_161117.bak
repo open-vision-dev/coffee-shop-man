@@ -1,0 +1,11 @@
+<?php
+
+class RenderScript extend CI_Model
+	{
+		public function format_users($users)
+		{
+		
+		
+		}
+	
+	}

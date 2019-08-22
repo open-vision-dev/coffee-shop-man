@@ -1,0 +1,258 @@
+<?php
+defined("BASEPATH") OR exit("not direct access");
+class RenderScript extends CI_Model
+	{
+		public function __construct()
+		{
+			
+			parent::__construct();
+			$this->load->model('MyTables','tables');
+			
+		}
+		public function format_users($users)
+		{
+			$RVIEW =<<<VIEW
+			<table class='table table-responsive table-striped'>
+			<thead>
+				<td>
+				ID
+				</td>
+				<td>
+				NAME
+				</td>
+				<td>
+				HASH
+				</td>
+			</thead>
+			
+			
+VIEW;
+			foreach($users as $user)
+			{
+				$ID = $user['ID'];
+				$NAME = $user['USERNAME'];
+				$PWD = $user['PWD'];
+				$RVIEW .="<tr> <td> $ID </td> <td>$NAME </td> <td>$PWD</td> ";
+				
+			}
+			$RVIEW .= "</table>";
+			return $RVIEW;
+		}
+		public function format_wh_table()
+		{
+			
+			$DATA = $this -> tables -> get_all_wh();
+			//var_dump($DATA);
+		//	die();
+			$VIEW = <<<TABLE
+			<table  class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+				<thead>
+					<tr>
+						<td><input type='checkbox' class='' id='select-all-wh' /></td>
+						<td>رقم المنتج</td>
+						<td>الاسم العربي</td>
+						<td>الاسم الانجليزي</td>
+						<td>الكمية</td>
+						<td>المقياس</td>
+						<td>الصلاحية</td>
+						<td>صورة المنتج</td>
+						<td>الاصناف</td>
+						<td>الخيارات</td>
+					</tr>
+				</thead>
+TABLE;
+			foreach($DATA AS $ITEM )
+			{
+
+				$ID = $ITEM['ID'];
+				$ARNAME = $ITEM['ARNAME'];
+				$ENNAME = $ITEM['ENNAME'];
+				$WUNIT = $ITEM['WUNIT'];
+				$WUNITSIZE = $ITEM['WUNITSIZE'];
+				$EDITLINK = site_link_to("Admin/wh/edit/$ID");
+				$VIEWLINK =site_link_to("Admin/wh/view/$ID");
+				$UNLINK  = site_link_to("Admin/wh/unlink/$ID");
+				$EXPIRING = ($ITEM['EXPIRING'] == 0) ? "قابل للانتهاء" : "غير قابل للانتهاء";
+				$PIC = "<img src='data:image/jpg;base64," .($ITEM['PIC']) . " ' style='width:50px;height:40px' / >";
+				$CATNAME = $this->tables->get_wh_cat_by_id($ITEM['CAT'])['NAME'];
+				$CATID = $ITEM['CAT'];
+				$OPTION = <<<DR
+				<div class="dropdown">
+					  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						الاعدادات
+					  </button>
+					  <div class="dropdown-menu" aria-labelledby="dropdown">
+						<a href='$EDITLINK' class="dropdown-item" type="button">تعديل</a>
+						<a href='$VIEWLINK' class="dropdown-item" type="button">حذف</a>
+						<a href='$UNLINK' class="dropdown-item" type="button">عرض بيانات المنتج في المخزن</a>
+					  </div>
+				</div>
+
+DR;
+				$VIEW .=<<<TR
+				<tr wh-id='$ID'>
+					<td><input type='checkbox' class='' id='select-all-wh' /></td>
+					<td>$ID</td>
+					<td>  $ARNAME  </td>
+					<td>  $ENNAME  </td>
+					<td>  $WUNIT  </td>
+					<td>   $WUNITSIZE </td>
+					<td>   $EXPIRING </td>
+					<td>   $PIC </td>
+					<td cat-id='$CATID'>   $CATNAME </td>
+					<td>   $OPTION </td>
+				
+				</tr>
+TR;
+				}
+			$VIEW .="</table>";
+			return $VIEW;
+		}
+		public function format_wh_edit_form($ID)
+		{
+			$WH_DATA = $this->tables->get_wh_by_id($ID);
+			
+			$WH_CAT_DATA = $this->tables->get_all_wh_cat($ID);
+			//var_dump($WH_CAT_DATA);
+			$data =  array(
+			"class" => "form-control text-center " , 
+			"autocomplete" => "off" , 
+	
+			
+			);
+			$f=form_open(site_link_to("Input/index/edit/wh/$ID" ), $data);
+			die(echo $f);
+			$select_box = '<div class="btn-group" data-toggle="buttons" role="group" aria-label="Basic example">';
+			foreach($WH_CAT_DATA as $WHCAT)
+			{
+				$checked = "";
+				$NAME = $WHCAT['NAME'];
+				$ID = $WHCAT['ID'];
+				if($ID == $WH_DATA['CAT'])
+				{
+					$checked = "checked";
+				}
+				$select_box.= "<label class='btn btn-primary'><input required='required' name='CATID' $checked type='radio' value='$ID' />$NAME</label>";
+			}
+			$select_box.="</div>";
+			$select_box2 = "<div class='btn-group col-xs-12' data-toggle='buttons' role='group' aria-label='Basic example'>";
+			//$opts = array ("","1");
+			$optsVal = array ("YES","NO");
+			$optsCounter=0;
+			foreach($optsVal  as $txt)
+			{
+				$checked = "";
+				//$txt = $optsVal[$i];
+				if($optsCounter == $WH_DATA['EXPIRING'])
+				{
+					$checked = " checked";
+				}
+				$select_box2 .= "<label class='btn btn-primary'><input class='form-control' required='required' name='EXPIRING' $checked type='radio' value='$ID' />$txt</label>";
+				$optsCounter++;
+			}
+			$select_box.="</div>";
+			$I=$WH_DATA;
+			//var_dump($I);
+			//die();
+			$view="";
+			//	var_dump($I);
+			$ARNAME = $I['ARNAME'];
+			$ENNAME = $I['ENNAME'];
+			$WUNIT = $I['WUNIT'];
+			$WUNITSIZE = $I['WUNITSIZE'];
+			$EXPIRING = $I['EXPIRING'];
+			$view.=<<<FORM
+			$f
+			
+			<div class="input-group">
+				
+				<input id="AR-NAME"  value="$ARNAME" type="text" class="form-control" name="AR_NAME" placeholder="AR-NAME">
+				<div class='input-group-append'>
+				<span for='ar' class="input-group-text"><i class="glyphicon glyphicon-user"> الاسم الانجليزي</i></span>
+				
+				</div>
+			</div>
+			<div class="input-group">
+				<div class='input-group-prepend'>
+				<span for='ar' class="input-group-text"><i class="glyphicon glyphicon-user">الاسم الانجليزي</i></span>
+				
+				</div>
+				<input id="EN_NAME" value="$ENNAME" type="text" class="form-control" name="EN_NAME" placeholder="الاسم الانجليزي">
+				
+			</div>
+			<div class="input-group">
+				<div class='input-group-prepend'>
+				<span for='ar' class="input-group-text"><i class="glyphicon glyphicon-user">وحدة القياس</i></span>
+				
+				</div>
+				<input id="WUNIT" value="$WUNIT" type="text" class="form-control" name="WUNIT" placeholder="وحدة القياس">
+				
+			</div>
+			<div class="input-group">
+				<div class='input-group-prepend'>
+				<span for='ar' class="input-group-text"><i class="glyphicon glyphicon-user">حجم/كمية الوحدة</i></span>
+				
+				</div>
+				<input id="WUNIT_SIZE"  value="$WUNITSIZE" type="text" class="form-control" name="WUNIT_SIZE" placeholder="5 ،100 ، 3.5 الخ">
+				
+			</div>
+			<div class="input-group">
+				<div class='input-group-prepend'>
+				<span for='ar' class="input-group-text"><i class="glyphicon glyphicon-user">التصنيف</i></span>
+				
+				</div>
+				$select_box2
+				
+			</div>
+			<div class="input-group">
+				<div class='input-group-prepend'>
+				<span for='ar' class="input-group-text"><i class="glyphicon glyphicon-user">التصنيف</i></span>
+				
+				</div>
+				$select_box
+				<input type='submit' class='btn btn-lg btn-success form-control text-center' value='تحديث' />
+			</div>
+			<script type='text/javascript'>
+			
+			$(documet).ready(function(){
+				
+			});
+			
+			</script>
+			<style> 
+			div.input-group .btn-group 
+			{
+				
+				width:100%;
+				
+			}
+				div.input-group .btn-group 
+			{
+				
+				width:100%;
+				
+			}
+			div.input-group span 
+			{
+				text-align:center;
+				width:100%;
+				
+			}
+			</style>
+				
+				
+FORM;
+			
+			
+			$view.="</form>";
+			
+			return $view;
+		}
+		public function a()
+		{
+			
+		}
+		
+	
+	}
+?>

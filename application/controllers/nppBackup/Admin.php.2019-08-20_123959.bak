@@ -1,0 +1,20 @@
+<?php
+defined('BASEPATH') OR exit();
+class Admin extends CI_Controller
+{
+	
+	public function __construct()
+	{
+		
+	}
+	public function index($method='wh')
+	{
+		switch(method)
+		case "wh":
+		$
+		break;
+		break;
+	}
+
+}
+?>

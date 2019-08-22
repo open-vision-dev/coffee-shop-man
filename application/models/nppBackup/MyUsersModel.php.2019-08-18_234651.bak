@@ -1,0 +1,22 @@
+<?php
+
+	class MyUsersModel extends CI_Model 
+	{
+		public function __construct()
+		{
+			$this->load->database("default");
+			$this->load->database("form_validation");
+			
+		}
+		public function get_all_users()
+		{
+			$query = $this->db->query("SELECT * FROM USERS ") -> result_array();
+			return $query;
+		}
+		public function auth_user($user , $pass )
+		{
+			$result = $this->db->get_where("USERS",
+		}
+		
+		
+	}

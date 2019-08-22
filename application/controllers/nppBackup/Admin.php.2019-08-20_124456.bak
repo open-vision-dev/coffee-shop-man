@@ -1,0 +1,20 @@
+<?php
+defined('BASEPATH') OR exit();
+class Admin extends CI_Controller
+{
+	
+	public function __construct()
+	{
+		$this->load->model('RenderScript','rsc');
+	}
+	public function index($method='wh')
+	{
+		switch(method)
+		case "wh":
+		$this->rsc->format_wh_table();
+		break;
+		break;
+	}
+
+}
+?>

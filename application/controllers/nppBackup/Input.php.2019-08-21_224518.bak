@@ -1,0 +1,30 @@
+<?php
+
+class extends CI_Controller
+{
+
+	public function __construct()
+	
+	{
+		parent::__construct();
+	}
+	public funtion wh ($page,$mode)
+	{
+		switch($mode)
+		{
+			case "wh":
+			
+			
+			break;
+			case "":
+			
+			break;
+			
+			
+		}
+		
+	}
+
+}
+
+?>

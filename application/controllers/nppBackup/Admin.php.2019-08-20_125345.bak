@@ -1,0 +1,37 @@
+<?php
+defined('BASEPATH') OR exit();
+class Admin extends CI_Controller
+{
+	
+	public function __construct()
+	{
+		parent::__construct();
+		$this->load->model('RenderScript','rsc');
+	}
+	public function index($method)
+	{
+		echo "done";
+		switch($method){
+		case "wh":
+		$data['page_content']=$this->rsc->format_wh_table();
+		$this->load->view('header');
+		$this->load->view('sidebar');
+		$this->load->view('content',$data);
+		$this->load->view('footer.php');
+		break;
+		default:
+		break;
+		}
+	}
+	public function edit($ID)
+	{
+		
+	}
+	public function remove($ID)
+	{
+		
+		
+	}
+
+}
+?>

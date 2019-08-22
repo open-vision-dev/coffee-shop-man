@@ -1,0 +1,10 @@
+<?php
+
+class extends CI_Controller
+{
+
+
+
+}
+
+?>

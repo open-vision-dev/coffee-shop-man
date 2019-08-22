@@ -1,0 +1,24 @@
+<?php
+
+class RenderScript extend CI_Model
+	{
+		public function format_users($users)
+		{
+			$RVIEW =<<<VIEW
+			<table class='table table-responsive'>
+			
+			
+			</table>
+			
+VIEW;
+			foreach($users as $user)
+			{
+				$ID = $user['ID'];
+				$NAME = $user['NAME'];
+				$PWD = $user['PWD'];
+					
+			}
+		
+		}
+	
+	}

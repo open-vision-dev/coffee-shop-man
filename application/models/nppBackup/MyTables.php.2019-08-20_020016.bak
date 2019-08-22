@@ -1,0 +1,18 @@
+<?php
+	class MyTables extends CI_Model
+	{
+		public function __construct()
+		{
+			$this->load->database();
+		}
+		public get_wh_by_id($ID)
+		{
+			$parms = array("ID"=>$ID);
+			$query = $this->db->get_where("WH",$parms);
+			
+		}
+		
+	}
+
+
+?>

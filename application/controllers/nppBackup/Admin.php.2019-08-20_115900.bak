@@ -1,0 +1,11 @@
+defined(BASE_PATH) OR exit();
+class Admin extends CI_Controller
+{
+
+	public function index()
+	{
+	$this->load('admin');
+	}
+
+}
+?>

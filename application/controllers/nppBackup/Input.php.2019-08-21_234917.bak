@@ -1,0 +1,33 @@
+<?php
+
+class Input extends CI_Controller
+{
+
+	public function __construct()
+	
+	{
+		parent::__construct();
+		$this->load->model("MyTables");
+		
+	}
+	public function index ($page,$mode)
+	{
+	//	echo $page;
+		//die();
+		$modes = array("edit","update","unlink");
+		(!in_array($mode,$modes,TRUE)) ?  exit(redirect("/")) : null;
+		$this->$mode($page);
+		
+	}
+	public function edit($page)
+	{
+		if($page == "wh")
+		{
+			
+		}
+		
+	}
+
+}
+
+?>

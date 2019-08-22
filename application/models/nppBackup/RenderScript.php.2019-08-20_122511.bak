@@ -1,0 +1,41 @@
+<?php
+defined("base_path") OR exit("");
+class RenderScript extends CI_Model
+	{
+		public function format_users($users)
+		{
+			$RVIEW =<<<VIEW
+			<table class='table table-responsive table-striped'>
+			<thead>
+				<td>
+				ID
+				</td>
+				<td>
+				NAME
+				</td>
+				<td>
+				HASH
+				</td>
+			</thead>
+			
+			
+VIEW;
+			foreach($users as $user)
+			{
+				$ID = $user['ID'];
+				$NAME = $user['USERNAME'];
+				$PWD = $user['PWD'];
+				$RVIEW .="<tr> <td> $ID </td> <td>$NAME </td> <td>$PWD</td> ";
+				
+			}
+			$RVIEW .= "</table>";
+			return $RVIEW;
+		}
+		public function format_wh_table($data)
+		{
+			
+		}
+		
+	
+	}
+?>

@@ -1,0 +1,29 @@
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+	function lvl_based_redirect($me)
+	{
+		if($me->session->userdata('lvl') > 1 )
+			{
+				$me->load->view("admin");
+			}
+			else if ( $this->session->userdata("lvl") < 1 )
+			{
+				$me->load->view("client");
+				
+			}
+		
+	}
+	function site_link ()
+	{
+		$obj = &get_instance();
+		$url = $obj->config->item('base_url') . 'CF/index.php/;
+		return $url;
+		
+	}
+	function site_link_to($page)
+	{
+		return site_link() . "/page";
+	}
+
+
+?>
