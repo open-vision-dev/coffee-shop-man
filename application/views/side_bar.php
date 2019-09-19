@@ -3,7 +3,7 @@
 
   <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
 
-    <a class="navbar-brand mr-1 fa fa-coffee" href="index.html">Coffee</a>
+    <a class="navbar-brand mr-1 fa fa-coffee" href="/">Coffee</a>
 
     <button class="btn btn-link btn-sm text-white order-1 order-sm-0" id="sidebarToggle" href="#">
       <i class="fas fa-bars"></i>
@@ -20,7 +20,7 @@
         </div>
       </div>
     </form>
-	
+
 <?php
 if(($_SESSION['lvl'] < 2) || !isset($_SESSION['lvl']))
 {
@@ -83,23 +83,51 @@ if(($_SESSION['lvl'] < 2) || !isset($this->session->userdata['lvl']))
         </a>
       </li>
       <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <a class="nav-link dropdown-toggle"
+        href="#" id="pagesDropdown"
+        role="button"
+         data-toggle="dropdown"
+          aria-haspopup="true" aria-expanded="false">
           <i class="fas fa-fw fa-folder"></i>
           <span>المخزن</span>
         </a>
         <div class="dropdown-menu" aria-labelledby="pagesDropdown">
           <h6 class="dropdown-header">السلع و المخزن</h6>
-          <a class="dropdown-item" href="<?php echo site_link_to('ِAdmin/wh'); ?>">السلع الاساسية</a>
+          <a class="dropdown-item" href="<?php echo site_link_to('Admin/wh'); ?>">السلع الاساسية</a>
           <a class="dropdown-item" href="<?php echo site_link_to('Admin/wh/listing'); ?>">معرض السلع</a>
-          <a class="dropdown-item" href="<?php echo site_link_to('Admin/store'); ?>">المخزن</a>
+          <a class="dropdown-item" href="<?php echo site_link_to('Admin/wh_cat/'); ?>">تصنيفات السلع</a>
+          <a class="dropdown-item" href="<?php echo site_link_to('Admin/store/'); ?>">المخزن</a>
           <div class="dropdown-divider"></div>
-          <h6 class="dropdown-header">Other Pages:</h6>
-          <a class="dropdown-item" href="404.html">404 Page</a>
-          <a class="dropdown-item" href="blank.html">Blank Page</a>
+          <h6 class="dropdown-header">الحسابات</h6>
+          <a class="dropdown-item" href="/admin/expt/all">اصناف المصروفات</a>
+          <a class="dropdown-item" href="/admin/expenses/all">المصروفات</a>
+        </div>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle"
+        href="#" id="mealsDropDown"
+        role="button"
+         data-toggle="dropdown"
+          aria-haspopup="true" aria-expanded="false">
+          <i class="fas fa-fw fa-sandwich"></i>
+          <span>الوجبات </span>
+        </a>
+        <div class="dropdown-menu" aria-labelledby="mealsDropDown">
+          <h6 class="dropdown-header">الوجبات و الاطعمة</h6>
+          <a class="dropdown-item" href="<?php echo site_link_to('Admin/meals'); ?>">
+
+          </a>
+          <a class="dropdown-item" href="<?php echo site_link_to('Admin/meals/'); ?>">الماكولات</a>
+          <a class="dropdown-item" href="<?php echo site_link_to('Admin/orders/'); ?>">الطلبات</a>
+          <a class="dropdown-item" href="<?php echo site_link_to('Admin/useditems/'); ?>">المواد المستخدمة</a>
+          <div class="dropdown-divider"></div>
+          <h6 class="dropdown-header">الحسابات</h6>
+          <a class="dropdown-item" href="/admin/expt/all">اصناف المصروفات</a>
+          <a class="dropdown-item" href="/admin/expenses/all">المصروفات</a>
         </div>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="charts.html">
+        <a class="nav-link" href="charts.html   ">
           <i class="fas fa-fw fa-chart-area"></i>
           <span>Charts</span></a>
       </li>

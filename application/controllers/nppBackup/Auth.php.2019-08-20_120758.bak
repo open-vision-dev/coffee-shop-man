@@ -29,7 +29,7 @@ class Auth extends CI_Controller
                        $ok=$this->MyUsersModel->auth_user($user , $pass );
 					   if($ok)
 					   {
-						   redirect(site_link().'/CF/index.php/Admin/');
+						   redirect(site_link().'/index.phpAdmin/');
 							//lvl_based_redirect($this);
 						// $this->load->view('index');
 					   }else{

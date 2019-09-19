@@ -4,10 +4,10 @@ class RenderScript extends CI_Model
 	{
 		public function __construct()
 		{
-			
+
 			parent::__construct();
 			$this->load->model('MyTables','tables');
-			
+
 		}
 		public function format_users($users)
 		{
@@ -24,8 +24,8 @@ class RenderScript extends CI_Model
 				HASH
 				</td>
 			</thead>
-			
-			
+
+
 VIEW;
 			foreach($users as $user)
 			{
@@ -33,14 +33,14 @@ VIEW;
 				$NAME = $user['USERNAME'];
 				$PWD = $user['PWD'];
 				$RVIEW .="<tr> <td> $ID </td> <td>$NAME </td> <td>$PWD</td> ";
-				
+
 			}
 			$RVIEW .= "</table>";
 			return $RVIEW;
 		}
 		public function format_wh_table()
 		{
-			
+
 			$DATA = $this -> tables -> get_all_wh();
 			//var_dump($DATA);
 		//	die();
@@ -72,8 +72,9 @@ TABLE;
 				$EDITLINK = site_link_to("Admin/wh/edit/$ID");
 				$VIEWLINK =site_link_to("Admin/wh/view/$ID");
 				$UNLINK  = site_link_to("Admin/wh/unlink/$ID");
+				$BGLINK  = site_link_to("Admin/wh/change_bg/$ID");
 				$EXPIRING = ($ITEM['EXPIRING'] == 0) ? "قابل للانتهاء" : "غير قابل للانتهاء";
-				$PIC = "<img src='data:image/jpg;base64," .($ITEM['PIC']) . " ' style='width:50px;height:40px' / >";
+				$PIC = "<img class='zoomMe' src='" .($ITEM['PIC']) . " ' style='width:50px;height:40px' / >";
 				$CATNAME = $this->tables->get_wh_cat_by_id($ITEM['CAT'])['NAME'];
 				$CATID = $ITEM['CAT'];
 				$OPTION = <<<DR
@@ -83,8 +84,9 @@ TABLE;
 					  </button>
 					  <div class="dropdown-menu" aria-labelledby="dropdown">
 						<a href='$EDITLINK' class="dropdown-item" type="button">تعديل</a>
-						<a href='$VIEWLINK' class="dropdown-item" type="button">حذف</a>
-						<a href='$UNLINK' class="dropdown-item" type="button">عرض بيانات المنتج في المخزن</a>
+						<a href='$BGLINK' class="dropdown-item" type="button">تغيير الصورة</a>
+						<a href='$VIEWLINK' class="dropdown-item" type="button">عرض البيانات</a>
+						<a href='$UNLINK' class="dropdown-item" type="button">حذف البيانات</a>
 					  </div>
 				</div>
 
@@ -101,7 +103,7 @@ DR;
 					<td>   $PIC </td>
 					<td cat-id='$CATID'>   $CATNAME </td>
 					<td>   $OPTION </td>
-				
+
 				</tr>
 TR;
 				}
@@ -111,9 +113,9 @@ TR;
 
 		public function a()
 		{
-			
+
 		}
-		
-	
+
+
 	}
 ?>
