@@ -45,7 +45,7 @@ defined("BASEPATH") or exit("No Script TransPassing!");
                     </div>
                     <div class='input-group mb-2'>
 
-                        <input type='number' step='0.10' required='required' name='ِamt'  class='form-control'/>
+                        <input type='number' step='0.10' required='required' name='amt'  class='form-control'/>
                         <div class='input-group-append'>
                         <div class='input-group-text'>
                             المبلغ

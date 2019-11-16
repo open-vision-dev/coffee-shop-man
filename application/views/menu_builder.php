@@ -681,6 +681,537 @@ $VIEW .= <<<XML
 </ol>
 
 XML;
+break;
+CASE "ORDERS_UNLINK":
+$VIEW .= <<<XML
+ <!-- Breadcrumbs-->
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="/Admin/wh/">الرئيسية</a>
+          </li>
+
+          <li class="breadcrumb-item ">
+              <a href='/Admin/meals/all'>
+                قائمة الوجبات
+            </a>
+
+		  </li>
+          <li class="breadcrumb-item ">
+              <A href='/Admin/orders/all'>
+                قائمة الطلبات
+            </a>
+
+
+         </li>
+          <li class='breadcrumb-item active'>
+                الغاء  الطلب
+
+          </li>
+
+</ol>
+
+XML;
+CASE "USED_ITEMS_ALL":
+$VIEW .= <<<XML
+ <!-- Breadcrumbs-->
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="/Admin/wh/">الرئيسية</a>
+          </li>
+
+
+
+          <li class='breadcrumb-item active'>
+            المواد المستخدمة
+
+          </li>
+
+          <li class="breadcrumb-item active">
+              <a href='/Admin/used_items/add'>
+                  اضافة بيانات
+            </a>
+
+        </li>
+</ol>
+XML;
+break;
+CASE "USED_ITEMS_ADD":
+$VIEW .= <<<XML
+ <!-- Breadcrumbs-->
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="/Admin/wh/">الرئيسية</a>
+          </li>
+
+
+
+          <li class='breadcrumb-item active'>
+            المواد المستخدمة
+
+          </li>
+
+          <li class="breadcrumb-item active">
+              <a href='/Admin/used_items/add'>
+                 اضافة جديدة
+            </a>
+
+        </li>
+</ol>
+XML;
+break;
+CASE "JOBS_ALL":
+$VIEW .= <<<XML
+ <!-- Breadcrumbs-->
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="/Admin/wh/">الرئيسية</a>
+          </li>
+
+
+
+          <li class='breadcrumb-item active'>
+              الوظائف المتوفرة
+
+          </li>
+
+          <li class="breadcrumb-item active">
+              <a href='/Admin/jobs/add'>
+         اضافة وظيفة
+            </a>
+
+        </li>
+</ol>
+XML;
+break;
+CASE "JOBS_UPDATE":
+$VIEW .= <<<XML
+ <!-- Breadcrumbs-->
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="/Admin/wh/">الرئيسية</a>
+          </li>
+
+
+
+          <li class='breadcrumb-item '>
+              <a href='/Admin/jobs/all' >
+              الوظائف المتوفرة
+          </a>
+
+          </li>
+
+          <li class="breadcrumb-item active">
+
+        تحديث بيانات الوظيفة
+
+
+        </li>
+</ol>
+XML;
+break;
+CASE "JOBS_UNLINK":
+$VIEW .= <<<XML
+ <!-- Breadcrumbs-->
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="/Admin/wh/">الرئيسية</a>
+          </li>
+
+
+
+          <li class='breadcrumb-item '>
+              <a href='/Admin/jobs/all' >
+              الوظائف المتوفرة
+          </a>
+
+          </li>
+
+          <li class="breadcrumb-item active">
+
+        حذف بيانات الوظيفة
+
+
+        </li>
+</ol>
+XML;
+break;
+CASE "JOBS_ADD":
+$VIEW .= <<<XML
+ <!-- Breadcrumbs-->
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="/Admin/wh/">الرئيسية</a>
+          </li>
+
+
+
+          <li class='breadcrumb-item '>
+              <a href='/Admin/jobs/all' >
+              الوظائف المتوفرة
+          </a>
+
+          </li>
+
+          <li class="breadcrumb-item active">
+              اضافة بيانات جديدة
+        </li>
+</ol>
+XML;
+break;
+CASE "WORKERS_ADD":
+$VIEW .= <<<XML
+ <!-- Breadcrumbs-->
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="/Admin/wh/">الرئيسية</a>
+          </li>
+
+
+
+          <li class='breadcrumb-item '>
+              <a href='/Admin/jobs/all' >
+            الوظائف المتوفرة
+          </a>
+
+          </li>
+          <li class='breadcrumb-item'>
+              <a href='/Admin/workers/all'>
+                     قائمة الموظفين
+              </a>
+          </li>
+
+          <li class="breadcrumb-item active">
+              اضافة موظف جديد
+        </li>
+</ol>
+XML;
+break;
+CASE "WORKERS_EDIT":
+$VIEW .= <<<XML
+<!-- Breadcrumbs-->
+       <ol class="breadcrumb">
+         <li class="breadcrumb-item">
+           <a href="/Admin/wh/">الرئيسية</a>
+         </li>
+
+
+
+         <li class='breadcrumb-item '>
+             <a href='/Admin/jobs/all' >
+           الوظائف المتوفرة
+         </a>
+
+         </li>
+         <li class='breadcrumb-item'>
+             <a href='/Admin/workers/all'>
+                    قائمة الموظفين
+             </a>
+         </li>
+
+         <li class="breadcrumb-item active">
+             تحديث بيانات موظف
+       </li>
+</ol>
+XML;
+CASE "WORKERS_EDIT":
+$VIEW .= <<<XML
+<!-- Breadcrumbs-->
+       <ol class="breadcrumb">
+         <li class="breadcrumb-item">
+           <a href="/Admin/wh/">الرئيسية</a>
+         </li>
+
+
+
+         <li class='breadcrumb-item '>
+             <a href='/Admin/jobs/all' >
+           الوظائف المتوفرة
+         </a>
+
+         </li>
+         <li class='breadcrumb-item'>
+             <a href='/Admin/workers/all'>
+                    قائمة الموظفين
+             </a>
+         </li>
+
+         <li class="breadcrumb-item active">
+             بيانات سلفيات المرتب
+       </li>
+</ol>
+XML;
+break;
+CASE "WORKERS_UNLINK":
+$VIEW .= <<<XML
+ <!-- Breadcrumbs-->
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="/Admin/wh/">الرئيسية</a>
+          </li>
+
+
+
+          <li class='breadcrumb-item '>
+              <a href='/Admin/jobs/all' >
+              الوظائف المتوفرة
+          </a>
+
+          </li>
+          <li class='breadcrumb-item '>
+              <a href='/Admin/workers/all' >
+              قائمة الموظفين
+          </a>
+
+          </li>
+
+          <li class="breadcrumb-item active">
+              حذف بيانات موظف
+        </li>
+</ol>
+XML;
+break;
+CASE "WORKERS_ALL":
+$VIEW .= <<<XML
+ <!-- Breadcrumbs-->
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="/Admin/wh/">الرئيسية</a>
+          </li>
+
+
+
+          <li class='breadcrumb-item '>
+              <a href='/Admin/jobs/all' >
+              الوظائف المتوفرة
+          </a>
+
+          </li>
+
+          <li class="breadcrumb-item active">
+              قائمة الموظفين
+        </li>
+        <li class="breadcrumb-item ">
+            <a href='/Admin/workers/add'>
+            اضافة موظف جديد
+        </a>
+      </li>
+</ol>
+XML;
+break;
+CASE "WORKERS_DEBITS_ALL":
+$VIEW .= <<<XML
+ <!-- Breadcrumbs-->
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="/Admin/wh/">الرئيسية</a>
+          </li>
+
+
+
+          <li class='breadcrumb-item '>
+              <a href='/Admin/jobs/all' >
+              الوظائف المتوفرة
+          </a>
+
+          </li>
+
+
+
+      <li class="breadcrumb-item active">
+         قائمة مديونيات الموظفين
+    </li>
+    <li class="breadcrumb-item ">
+        <a href='/Admin/workers_debits/add'>
+            اضافة سلفية جديد
+
+    </a>
+  </li>
+</ol>
+XML;
+break;
+CASE "WORKERS_DEBITS_ADD":
+$VIEW .= <<<XML
+ <!-- Breadcrumbs-->
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="/Admin/wh/">الرئيسية</a>
+          </li>
+
+
+
+          <li class='breadcrumb-item '>
+              <a href='/Admin/jobs/all' >
+              الوظائف المتوفرة
+          </a>
+
+          </li>
+
+
+        <li class="breadcrumb-item ">
+            <a href='/Admin/workers_debits/all'>
+
+                 قائمة مديونيات الموظفين
+        </a>
+      </li>
+      <li class="breadcrumb-item active">
+            اضافة سلفية جيد
+    </li>
+</ol>
+XML;
+break;
+CASE "WORKERS_DEBITS_UNLINK":
+$VIEW .= <<<XML
+ <!-- Breadcrumbs-->
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="/Admin/wh/">الرئيسية</a>
+          </li>
+
+
+
+          <li class='breadcrumb-item '>
+              <a href='/Admin/jobs/all' >
+              الوظائف المتوفرة
+          </a>
+
+          </li>
+
+
+        <li class="breadcrumb-item ">
+            <a href='/Admin/workers_debits/all'>
+
+                 قائمة مديونيات الموظفين
+        </a>
+      </li>
+      <li class="breadcrumb-item active">
+        أزالة بيانات سلفية
+    </li>
+</ol>
+XML;
+break;
+CASE "STORE_DEBITS_ALL":
+$VIEW .= <<< XML
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">
+    <a href="/Admin/wh/">الرئيسية</a>
+  </li>
+
+
+<li class="breadcrumb-item active">
+
+
+         قائمة مديونيات المحل
+
+</li>
+<li class="breadcrumb-item "  >
+    <a href='/Admin/store_debits/add'>
+اضافة مديونية جديدة
+</a>
+</li>
+</ol>
+XML;
+break;
+case "STORE_DEBITS_ADD":
+$VIEW .= <<< XML
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">
+    <a href="/Admin/wh/">الرئيسية</a>
+  </li>
+
+
+<li class="breadcrumb-item ">
+        <a href='/Admin/store_debits/all'>
+         قائمة مديونيات المحل
+     </a>
+</li>
+<li class="breadcrumb-item active"  >
+
+        اضافة مديونية جديدة
+
+</li>
+</ol>
+XML;
+break;
+case "STORE_DEBITS_UNLINK":
+$VIEW .=<<<XML
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">
+    <a href="/Admin/wh/">الرئيسية</a>
+  </li>
+
+
+<li class="breadcrumb-item ">
+        <a href='/Admin/store_debits/all'>
+         قائمة مديونيات المحل
+     </a>
+</li>
+<li class="breadcrumb-item active"  >
+
+    حذف الغاء بيانات مديونية
+
+</li>
+</ol>
+XML;
+break;
+case "STORE_DEBITS_UPDATE":
+$VIEW .=<<<XML
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">
+    <a href="/Admin/wh/">الرئيسية</a>
+  </li>
+
+
+<li class="breadcrumb-item ">
+        <a href='/Admin/store_debits/all'>
+         قائمة مديونيات المحل
+     </a>
+</li>
+<li class="breadcrumb-item active"  >
+
+    تحديث بيانات مديونية
+
+</li>
+</ol>
+XML;
+break;
+case "STORE_DEBITS_PAY":
+$VIEW .=<<<XML
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">
+    <a href="/Admin/wh/">الرئيسية</a>
+  </li>
+
+
+<li class="breadcrumb-item ">
+        <a href='/Admin/store_debits/all'>
+         قائمة مديونيات المحل
+     </a>
+</li>
+<li class="breadcrumb-item active"  >
+
+    سداد  مديونية
+
+</li>
+</ol>
+XML;
+break;
+CASE "REPORTS_ALL":
+$VIEW .= <<<XML
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">
+    <a href="/Admin/wh/">الرئيسية</a>
+  </li>
+
+
+<li class="breadcrumb-item ">
+
+            التقرير الشامل
+
+</li>
+</ol>
+XML;
+
+break;
 }
 
 echo $VIEW;

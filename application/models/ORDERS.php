@@ -82,9 +82,9 @@ thead;
     $VIEW.= "</tbody></table></div>";
     return $VIEW;
     }
-    public function render_orders_info($ID)
+    public function render_orders_info($OID)
     {
-        $data = $this->tables->get_order_info_by_id($ID);
+        $data = $this->tables->get_order_info_by_id($OID);
         $VIEW = <<< TABLE
         <div>
         <a href='#' onclick='printJS("invoicetable","html")' class='btn btn-success form-control mb-3'>
@@ -106,6 +106,7 @@ TABLE;
             $QTY = $A['QTY'];
             $PRICE = $A['PRICE'];
             $TP = $A['TP'];
+
             $VIEW .=<<<TABLES
                 <tr>
                     <td>$ID</td>
@@ -116,7 +117,9 @@ TABLE;
                 </tr>
 TABLES;
         }
-       $VIEW .= "</tbody></table></div>";
+       $VIEW .= "</tbody></table>
+       <a class='btn btn-danger form-control' href='/Admin/orders/unlink/$OID'>حذف / الغاء الطلب</a>
+       </div>";
        $VIEW .= $this->render_hidden_orders_table($data);
        return $VIEW;
     }
@@ -137,17 +140,80 @@ TABLES;
     public function render_orders_add()
     {
         $data = $this->tables->get_all_meals();
-        foreach($data as $meow)
+        $VIEW =<<<XMLL
+        <table class='table table-striped' id='dataTable'>
+            <thead>
+
+            <td>
+            NO
+            </td>
+            <td>
+            SEL
+            </td>
+            <td>
+            NAME
+            </td>
+            <td>
+            PRICE
+            </td>
+            <td>
+            PIC
+            </td>
+            </thead>
+
+XMLL;
+        foreach($data as $A)
         {
-            
+            $ID = $A['MID'];
+
+            $NAME = $A['NAME'];
+            $TAG = $ID .'-'.$NAME;
+            $PRICE  = $A['PRICE'];
+            $PIC = $A['PIC'];
+            $SEL = "<a href='#' class='btn btn-info' data-name='$NAME' data-price='$PRICE' id='$ID' class='form-control input-lg' onClick='JSCart(\"$ID\",\"$NAME\",\"$PRICE\")'>ADD<a /> ";
+                        $VIEW .=<<<LLL
+                    <tr>
+                        <td>
+                        $ID
+                        </td>
+                        <td>
+                        $SEL
+                        </td>
+                        <td>
+                        $NAME
+                        </td>
+                        <td>
+                        $PRICE
+                        </td>
+                        <td>
+                        <img src='$PIC' />
+                        </td>
+                    </tr>
+
+
+LLL;
         }
-        $VIEW =  <<<XML
-        <div class=''>
-                <span >
-                        Hello World
-                </span>
-        </div>
-XML;
+        $VIEW .="</tbody></table><div i><table id='BASKET' class='table table-striped'>
+        <thead>
+            <td>
+            ID
+            </td>
+            <Td>
+            NAME
+            </td>
+            <td>
+            PRICE
+            </td>
+            <td>
+            QTY
+            </td>
+            <td>
+            REMOVE
+            </td>
+
+        </thead>
+        </table><table id='orderTotalTable' class='table table-striped'></table><form method='POST' id='JSCartForm' action='/Input/add/orders'><input type='hidden' id='JSCartData' name='JSCartData' /></form></div>";
+
         return $VIEW;
     }
     public function pretty_orders_table($data)
@@ -196,6 +262,53 @@ PRETTY;
         }
         $VIEW.="</table></div>";
         return $VIEW;
+    }
+    public function render_orders_unlink($ID)
+    {
+            $VIEW = "<div class=''></div>";
+            $A  =$this->tables->get_orders_by_id($ID)[0];
+
+            $OID = $A['OID'];
+            $AMT = $A['AMT'];
+            $DT = $A['DT'];
+            $C = $this->tables->get_orders_counts($ID);
+
+             $VIEW.= <<<XMLA
+            <div class=''>
+                <p class='h3 text-warning text-center mb-3'>
+
+                    هل انت متاكد من انك تود حذف بيانات هذا الطلب
+                </p>
+                <table class='table table-striped mb-3'>
+                    <thead>
+                            <td>الرقم</td>
+                            <td>المبلغ</td>
+                            <Td>عدد الاصناف</td>
+                            <td>التاريخ</td>
+                            <td>التفاصيل</td>
+                    </thead>
+                    <tbody>
+                            <tr>
+                                    <td>$OID</td>
+                                    <td>$AMT</td>
+                                    <td>$C</td>
+                                    <td>$DT</td>
+                                    <td><a class='btn btn-info form-control' href='/Admin/orders/info/$OID'>التفاصيل</a></td>
+                            </tr>
+                    </tbody>
+                </table>
+                <div>
+                <a href='/Input/unlink/orders/$OID' class='btn btn-danger form-control'>
+                استمرار حذف الطلب
+                </a>
+                <a href='/Admin/orders/info/$OID' class='btn btn-info form-control'>
+                تراجع
+                </a>
+
+                </div>
+            </div>
+XMLA;
+            return $VIEW;
     }
 
 }

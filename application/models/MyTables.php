@@ -73,7 +73,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			);
 			return $this->db->insert("EXPT",$parms);
 			}
-			public function add_expenses($name,$expt,$amt)
+			public function add_expenses($name,$expt,$amt,$info=NULL)
 			{
 				$parms = array(
 					"ID" => NULL,
@@ -85,7 +85,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 					"INFO"=>NULL
 
 				);
-				var_dump($parms);
 				$ok =  $this->db->insert(
 						"EXPENSES" ,
 						$parms
@@ -114,6 +113,96 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 				);
 				return ($ok == true)	 ? $this->db->insert_id() : FALSE;
 
+			}
+			public function add_orders($AMT)
+			{
+
+				$parms = array(
+					"OID" => NULL,
+					"AMT" => $AMT
+					,"DT" => date("Y-m-d h:i:s"),
+					"RMD" => FALSE
+			 );
+			 $ok  =	 $this->db->insert("ORDERS",$parms);
+			 return ($ok == true)	 ? $this->db->insert_id() : FALSE;
+			}
+			public function add_orderinfo($OID,$MID,$QTY,$PRICE,$TP)
+			{
+
+				$parms = array(
+					"ID" => NULL,
+					"OID" => $OID,
+					"MID" => $MID ,
+					"QTY" => $QTY,
+					"PRICE" => $PRICE,
+					"TP" => $TP,
+					"DT" => date("Y-m-d h:i:s"),
+
+			 );
+			 return	 $this->db->insert("ORDERINFO",$parms);
+			}
+			public function add_useditems($WHID,$QTY)
+			{
+				$parms = array(
+					"ID"=>NULL,
+					"WHID" => esc($WHID) ,
+					"QTY" => esc($QTY),
+					"DT"=>date("Y-m-d h:i:s")
+				);
+				return $this->db->insert("USED_ITEMS",$parms);
+			}
+			public function add_jobs($NAME,$SALARY,$PRI=1)
+			{
+				$parms = array(
+					"JID" => NULL ,
+					"SALARY"=> $SALARY,
+					"JTITLE" => $NAME ,
+					"PRI" => $PRI ,
+					"RMD" => FALSE
+				);
+				return $this->db->insert("JOBS",$parms);
+			}
+			public function add_workers($NAME,$TEL1,$TEL2,$JOB_ID)
+			{
+				$parms = array(
+					"ID"=>NULL,
+					"JOB_ID" => $JOB_ID ,
+					"NAME" => $NAME,
+					"TEL"=> $TEL1,
+				 	"TEL2" => $TEL2 ,
+
+					"RMD" => FALSE
+				);
+				$ok =  $this->db->insert("WORKERS",$parms);
+				return ($ok) ? $this->db->insert_id() : null;
+			}
+			public function add_workers_debits($WID,$AMT)
+			{
+				$parms = array(
+					"WID"=>$WID,
+					"AMT"=>$AMT,
+
+					"DT"=> date("Y-m-d h:i:s")
+				);
+				$ok =  $this->db->insert("WORKERS_DEBITS",$parms);
+			 return ($ok == true)	 ? $this->db->insert_id() : FALSE;
+			}
+			public function add_store_debits($LENDER,$AMT,$DDESC,$PAYDATE)
+			{
+				$parms = array(
+					"ID"=>NULL,
+					"LENDER"=>$LENDER,
+					"AMT" => $AMT ,
+					"DDESC" => $DDESC,
+					"PAYDATE" => $PAYDATE,
+					"PAID" => FALSE ,
+					"DT" => date("Y-m-d h:i:s"),
+					"PAIDDT" => NULL,
+					"RMD"=>FALSE
+
+				);
+				$ok =  $this->db->insert("STORE_DEBITS",$parms);
+				return $ok;
 			}
 		//  @@GETTERS  - @all ###############################################################################
 		public function get_all_wh()
@@ -263,7 +352,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			return $this->db->get_where(
 				"EXPT",
 				array(
-					"ID"=> $this->db->escape_str($id)
+					"id"=> $this->db->escape_str($id)
 				)
 			)->result_array();
 		}
@@ -334,10 +423,30 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 				)
 			)->result_array();
 		}
+		public function  get_workers_by_job_id($id)
+		{
+			return $this->db->get_where(
+				"WORKERS",
+				array(
+					"JOB_ID"=> $this->db->escape_str($id) ,
+
+				)
+			)->result_array();
+		}
+		public function  get_workers_by_id($id)
+		{
+			return $this->db->get_where(
+				"WORKERS",
+				array(
+					"ID"=> $this->db->escape_str($id) ,
+
+				)
+			)->result_array();
+		}
 		public function get_workers_debits_by_id($id)
 		{
 			return $this->db->get_where(
-				"ID",
+				"WORKERS_DEBITS",
 				array(
 					"ID"=> $this->db->escape_str($id) ,
 
@@ -347,13 +456,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 		public function get_store_debits_by_id($id)
 		{
-			return $this->db->get_where(
+		$data= 	$this->db->get_where(
 				"STORE_DEBITS",
 				array(
 					"ID"=> $this->db->escape_str($id) ,
 
 				)
 			)->result_array();
+
+		return  $data;
 		}
 		public function get_used_items_by_wid($id)
 		{
@@ -522,7 +633,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 			$parms = array(
 
-				"LENDER"=> esc($LENDER),
+				"LENDER"=> esc($lender),
 				"AMT" =>  esc ($amt),
 				"DDESC" =>  esc ($ddesc),
 				"PAYDATE" =>  esc ($paydate),
@@ -531,6 +642,26 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			$ok =  $this->db->update("STORE_DEBITS",$parms);
 
 			return $ok;
+		}
+		public function close_store_debits($id)
+		{
+			$id = $this->db->escape_str($id);
+
+			$parms = array(
+
+				"ID" => $id ,
+				"PAID" => TRUE ,
+				"PAIDDT" => date("Y-m-d h:i:s")
+			);
+			$this->db->where('ID',$id);
+			$ok =  $this->db->update("STORE_DEBITS",$parms);
+
+			$NAME  = $this->get_store_debits_by_id($id)[0]['LENDER'];
+			$AMT  = $this->get_store_debits_by_id($id)[0]['AMT'];
+			$DESC = $this->get_store_debits_by_id($id)[0]['DDESC'];
+			$ok2 = $this->add_expenses($NAME,2,$AMT,"تم اغلاق المديوينة");
+
+			return $ok && $ok2 ;
 		}
 		public function update_jobs($JID,$JTITLE,$PRI,$SALARY)
 		{
@@ -552,7 +683,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			$ID = esc($ID);
 			$parms = array(
 				"NAME" => esc($NAME)  ,
-				"TEL1" => esc($T1)  ,
+				"TEL" => esc($T1)  ,
 				"TEL2" => esc($T2)  ,
 				"JOB_ID" => esc($JOB_ID)  ,
 
@@ -561,6 +692,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			$ok =  $this->db->update("WORKERS",$parms);
 			return $ok;
 		}
+
 		public function update_workers_debits($ID,$WID,$AMT)
 		{
 			$ID = esc($ID);
@@ -613,8 +745,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		}
 		*/
 		public function unlink_used_items_by_id($id){
-			$this->db->where("WHID",$id);
-			$this->db->delete("USED_ITEMS");
+			$this->db->where("ID",$id);
+			return $this->db->delete("USED_ITEMS");
 		}
 		public function unlink_store_by_id($id){
 			$this->db->where("ID",$id);
@@ -654,8 +786,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			$parms = array(
 				"RMD"=>true
 			);
-			$this->db->where("OID",esc($ID));
-			return $this->db->update("ORDERS",$parms);
+			$this->db->where("OID",esc($OID));
+		return 	$this->db->update("ORDERS",$parms);
+
 		}
 		public function unlink_order_info($ID)
 		{
@@ -681,12 +814,16 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		public function unlink_workers_debits($ID)
 		{
 			$this->db->where("ID",esc($ID));
-			return $this->db->delete-("WORKERS_DEBITS");
+
+			$ok =  $this->db->delete("WORKERS_DEBITS");
+
+			return $ok;
 		}
 		public function unlink_store_debits($ID)
 		{
 			$this->db->where("ID",esc($ID));
-			return $this->db->delete-("STORE_DEBITS");
+			$parms = array("RMD"=>TRUE);
+			return $this->db->update("STORE_DEBITS",$parms);
 		}
 		public function unlink_unused_items($ID)
 		{
@@ -695,6 +832,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		}
 		###########################################################################################################
 		// @@MISC
+		public function get_jobs_count($id)
+		{
+			$parms = array(
+				"JOB_ID" => $id
+			);
+			$results = $this->db->get_where("WORKERS",$parms)->result_array();
+			return ($results != null ) ? count($results) : 0;
+		}
 		public function auth_action($pwd){
 			$id = $this->session->id;
 			$data = array(
@@ -765,6 +910,47 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 
 	}
+	public function get_used_items_by_interval($start,$end)
+	{
+			$A = $this->db->escape_str($start);
+			$B = $this->db->escape_str($end);
+			$queryString = <<<SQL
+				SELECT  USED_ITEMS.ID,WH.PIC,USED_ITEMS.WHID,USED_ITEMS.QTY,USED_ITEMS.DT,WH.ARNAME,WH.ENNAME
+		 	FROM `USED_ITEMS`
+		 	 INNER JOIN  `WH`
+			  ON `WH`.`ID` = `USED_ITEMS`.`WHID`
+			  WHERE `DT`
+			  BETWEEN '$A' AND '$B'
+
+			  AND `RMD` = 0
+			  ORDER BY `CAT`
+
+
+SQL;
+			$result = $this->db->query($queryString);
+			return 	$result->result_array();
+
+	}
+	public function get_used_items_by_interval_whid($start,$end,$whid)
+	{
+			$A = $this->db->escape_str($start);
+			$B = $this->db->escape_str($end);
+			$whid = esc($whid);
+			$queryString = <<<SQL
+				SELECT 	`USED_ITEMS`.`ID` AS USID,*
+		 	   FROM `USED_ITEMS`
+        	 	INNER JOIN  `WH`
+			  ON `WH`.`ID` = `USED_ITEMS`.`WHID`
+			  WHERE `DT`
+			  BETWEEN '$A' AND '$B'
+			  AND `RMD` = 0
+			  AND `WHID` = '$whid'
+			  ORDER BY `CAT`
+SQL;
+			$result = $this->db->query($queryString);
+			return 	$result->result_array();
+	}
+
 	public function get_orders_counts($OID)
 	{
 		$data = $this->get_order_info_by_id($OID);
@@ -775,8 +961,338 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		}
 		return $total;
 	}
+	public function get_distinct_store_whid()
+	{
+		$query = "SELECT DISTINCT(STORE.WID)AS ID,`ARNAME`,`ENNAME`  FROM `STORE` INNER JOIN `WH` ON `STORE`.`WID` = `WH`.`ID`  ";
+		return $this->db->query($query)->result_array();
+	}
+	public function get_used_item_wh_count($WHID)
+	{
+		$WHID = esc($WHID);
+		$query = "SELECT count(ID) FROM `USED_ITEMS` WHERE WHID = '$WHID' AND RMD = 0";
+		return $this->db->query($query)->result_array();
+	}
+	public function get_workers_debits_interval($id,$start,$end)
+	{
+				$id = $this->db->escape_str($id);
+				$A = $this->db->escape_str($start);
+				$B = $this->db->escape_str($end);
+				$queryString = <<<SQL
+				SELECT SUM(`AMT`) AS TOTAL FROM `WORKERS_DEBITS`
+				WHERE DT
+				  BETWEEN '$A' AND '$B'
 
+				  AND `WID` = $id
+
+
+SQL;
+				$result = $this->db->query($queryString);
+				return 	$result->result_array();
 
 	}
+	public function get_workers_debits_interval_info($id,$start,$end)
+	{
+				$id = $this->db->escape_str($id);
+				$A = $this->db->escape_str($start);
+				$B = $this->db->escape_str($end);
+				$queryString = <<<SQL
+				SELECT * FROM `WORKERS_DEBITS`
+				WHERE `DT`
+				  BETWEEN '$A' AND '$B'
 
+				  AND `WID` = $id
+
+
+SQL;
+				$result = $this->db->query($queryString);
+
+				return 	$result->result_array();
+
+	}
+	public function get_store_debits_interval_info($start,$end)
+	{
+				$A = $this->db->escape_str($start);
+				$B = $this->db->escape_str($end);
+				$queryString = <<<SQL
+				SELECT * FROM `STORE_DEBITS`
+				WHERE `DT`
+				  BETWEEN '$A' AND '$B'
+				  AND `RMD` != TRUE
+
+
+
+
+SQL;
+				$result = $this->db->query($queryString);
+
+				return 	$result->result_array();
+
+	}
+	public function get_workers_debits_interval_info_noid($start,$end)
+	{
+
+				$A = $this->db->escape_str($start);
+				$B = $this->db->escape_str($end);
+				$queryString = <<<SQL
+				SELECT * FROM `WORKERS_DEBITS`
+				WHERE DT
+				  BETWEEN '$A' AND '$B'
+
+
+SQL;
+				$result = $this->db->query($queryString);
+				return 	$result->result_array();
+
+	}
+	public function get_store_listing_data()
+	{
+		$items = $this->get_all_wh();
+		$wh_content = array();
+		foreach($items as $I)
+		{
+			$ID = $I['ID'];
+			$name = $I['ARNAME'] .'-'. $I['ENNAME'];
+			$name = "<a href='Admin/wh/view/$ID' >$name</a>";
+			$qty = $this->get_store_wh_qty_count($ID)[0]['TOTAL'];
+			$qty = ($qty == NULL) ? 0 : $qty;
+			$used =$this-> get_used_item_wh_qty_count($ID)['0']['TOTAL'];
+			$used = ($used == NULL) ? 0 : $used;
+			$avail = $qty - $used;
+			$avail = ($avail < 0) ? 0 : $avail;
+			$pic = $I['PIC'];
+			array_push($wh_content,array(
+				'name'=>$name,
+				'qty'=>$qty  ,
+				'pic'=>$pic ,
+				'avail'=>$avail,
+				'used'=>$used,
+
+			));
+		}
+		return $wh_content;
+	}
+	public function get_store_wh_qty_count($id)
+	{
+		$id = $this->db->escape_str($id);
+
+		$queryString = <<<SQL
+		SELECT SUM(`QTY`)+0 AS TOTAL FROM `STORE`
+		WHERE `WID` = $id
+
+
+SQL;
+		$result = $this->db->query($queryString);
+		return 	$result->result_array();
+	}
+	public function get_used_item_wh_qty_count($id)
+	{
+		$id = $this->db->escape_str($id);
+
+		$queryString = <<<SQL
+		SELECT SUM(`QTY`)+0 AS TOTAL FROM `USED_ITEMS`
+		WHERE `WHID` = $id
+
+
+SQL;
+		$result = $this->db->query($queryString);
+		return 	$result->result_array();
+	}
+	public function get_income_interval($start,$end)
+	{
+		$start = $this->db->escape($start);
+		$end = $this->db->escape($end);
+		$queryString = <<<Q
+			SELECT SUM(AMT)AS TOTAL
+			FROM ORDERS
+			WHERE DT BETWEEN
+			$start
+			and
+			$end
+			AND RMD = FALSE
+Q;
+
+	$result = $this->db->query($queryString);
+	return 	$result->result_array();
+	}
+	public function get_expenses_sum_interval($start,$end)
+	{
+		$start = $this->db->escape($start);
+		$end = $this->db->escape($end);
+		$queryString = <<<Q
+			SELECT SUM(AMT)
+			AS TOTAL
+			FROM EXPENSES
+			WHERE DT BETWEEN
+			$start
+			AND
+			$end
+			AND RMD = FALSE
+Q;
+	$result = $this->db->query($queryString);
+	return 	$result->result_array();
+	}
+
+	public function get_unpaid_debits_intw($start,$end)
+	{
+			$start = $this->db->escape($start);
+			$end = $this->db->escape($end);
+			$queryString = <<<Q
+				SELECT SUM(AMT)AS TOTAL
+				FROM STORE_DEBITS
+				WHERE
+				RMD =0
+				AND PAID=0
+				AND DT BETWEEN
+				$start
+				and
+				$end
+
+Q;
+		$result = $this->db->query($queryString);
+		return 	$result->result_array();
+	}
+	public function get_expenses_listing_pie_chart_data($start,$end)
+	{
+		$dataset =array(
+			"labels" => array() ,
+			"data" => array() ,
+			"backgroundColor" => array()
+		);
+		$info = $this->get_expenses_listing($start,$end);
+		foreach($info as $A)
+		{
+			array_push($dataset['labels'],$A['NAME']);
+			array_push($dataset['data'],$A['PERCENT']);
+		//	srand(md5(time()));
+			$c1 =rand(0,255);
+			$c2 =rand(0,255);
+			$c3 =rand(0,255);
+
+			$color = "rgb( $c1, $c2 , $c3)";
+			array_push($dataset['backgroundColor'],$color);
+		}
+		$labels_txt = json_encode($dataset['labels']);
+		$data_txt = json_encode($dataset['data']);
+		$bg_txt = json_encode($dataset['backgroundColor']);
+		$raw = <<<XML
+		data : {
+			labels : $labels_txt  ,
+			dataset:[{
+			data: $data_txt ,
+			backgroundColor:$bg_txt ,
+			  }],
+			}
+
+XML;
+		return json_encode($dataset);
+	}
+	public function get_expenses_listing($start,$end)
+	{
+	//	$start = $this->db->escape_str($start);
+	//$end = $this->db->escape_str($end);
+		$exp_total = $this->get_expenses_sum_interval($start,$end)[0]['TOTAL'];
+		$A = $this->get_all_expt();
+		$listing = array();
+		foreach($A as $B)
+		{
+			$NAME = $B['NAME'];
+			$ID = $B['ID'];
+			$TOTAL = $this->get_expenses_by_expt_interval($start,$end,$ID);
+			$TOTAL = $TOTAL[0]['TOTAL'] + 0;
+
+			$PERCENT =  ($exp_total <= 1 ) ? 0  :round((($TOTAL )/ $exp_total)*100,2);
+			$data = array(
+				"ID" => $ID,
+				"NAME"=>$NAME ,
+				"TOTAL" => $TOTAL ,
+				"PERCENT" => $PERCENT
+			);
+			array_push($listing,$data);
+		}
+	//	var_dump("<pre>",$listing,"<pre>");
+	//	die();
+		return $listing;
+	}
+	public function get_expenses_by_expt_interval($start,$end,$expt)
+	{
+		$start = $this->db->escape($start);
+		$end = $this->db->escape($end);
+	//	$expt = $this->db->escape($expt);
+		$queryString = <<<Q
+			SELECT SUM(AMT)
+			AS TOTAL
+			FROM EXPENSES
+			WHERE RMD = FALSE
+			AND EXPT = $expt
+			AND  DT BETWEEN
+			$start
+			AND
+			$end
+
+
+Q;
+	$result = $this->db->query($queryString);
+//	var_dump("<pre>",$this->db);
+//	die();
+	return $result->result_array();
+
+	}
+	public  function get_order_listing($start,$end)
+	{
+		$info = $this->get_all_meals();
+		$result = array();
+		foreach($info as $M)
+		{
+			$MID = $M['MID'];
+			$NAME = $M['NAME'];
+			$PRICE = $M['PRICE'];
+			$D = $this->get_orderinfo_sum($MID,$start,$end)[0];
+			$QTY = $D['TOTAL'] + 0;
+			$TP_PRICE = $D['TOTAL_TP'] + 0;
+			$data = array(
+				"ID" => $MID,
+			"NAME" => $NAME ,
+			"PRICE" => $PRICE ,
+			"QTY" => $QTY ,
+			"TP"	=> $TP_PRICE
+			);
+			array_push($result,$data);
+		}
+		return $result;
+	}
+	public function get_orderinfo_sum($MID,$start,$end)
+	{
+		$start = $this->db->escape_str($start);
+		$end = $this->db->escape_str($end);
+		$mid = $this->db->escape_str($end);
+		$queryString = <<<Q
+		SELECT SUM(QTY) AS TOTAL,SUM(TP) AS TOTAL_TP
+		FROM ORDERINFO
+		WHERE
+		MID = $MID AND
+		DT BETWEEN '$start' and '$end'
+Q;
+	$result = $this->db->query($queryString);
+	return 	$result->result_array();
+
+	}
+	public function get_paid_debits_sum_interval($start,$end)
+	{
+		$start = $this->db->escape($start);
+		$end = $this->db->escape($end);
+		$queryString = <<<Q
+		SELECT SUM(AMT) AS TOTAL
+		FROM STORE_DEBITS
+		 WHERE PAID = 1
+		 and RMD = 0
+		 AND DT BETWEEN $start and $end
+Q;
+	$result = $this->db->query($queryString);
+	return 	$result->result_array();
+	}
+
+
+
+
+}
 ?>

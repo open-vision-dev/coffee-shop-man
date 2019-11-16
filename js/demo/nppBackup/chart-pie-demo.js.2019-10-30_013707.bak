@@ -14,7 +14,7 @@ var myPieChart = new Chart(ctx, {
     }],
   },
 });*/
-            var ctx = document.getElementById("expenses_pie_chart");
+                var ctx = document.getElementById("expenses_pie_chart");
             var myPieChart = new Chart(ctx, {
             type: 'pie',
             		data : {

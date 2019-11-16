@@ -133,6 +133,40 @@ FORM;
 
 			return $view;
 		}
+		public function render_wh_listing()
+		{
+			$WH_DATA = $this->tables->get_store_listing_data();
+
+			$VIEW = <<<VIEW
+			<table class='table text-center' id='dataTable'>
+			<thead>
+				<td>PIC </td>
+				<Td>Name</td>
+				<Td>Qty</td>
+				<Td>USED</td>
+				<Td>Avail</td>
+			</thead>
+VIEW;
+			foreach($WH_DATA as $TABLE)
+			{
+				$NAME = $TABLE['name'];
+				$QTY = $TABLE['qty'];
+				$USED = $TABLE['used'];
+				$AVAIL = $TABLE['avail'];
+				$PIC = $TABLE['pic'];
+				$PIC = "<img src='$PIC' style='width:50px;height:40px'  / >";
+				$VIEW .= <<<XML
+				<tr>
+					<td>$PIC</td>
+					<Td>$NAME</td>
+					<Td>$QTY</td>
+					<Td>$USED</td>
+					<Td>$AVAIL</td>
+				</tr>
+XML;
+			}
+			return $VIEW;
+		}
 		public function  render_wh_item_view($ID)
 		{
 			$WH_DATA = $this->tables->get_wh_by_id($ID);

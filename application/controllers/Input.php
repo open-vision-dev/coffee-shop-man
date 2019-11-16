@@ -19,7 +19,7 @@ class Input extends CI_Controller
 	//	echo $page;
 		//die();
 
-		$modes = array("edit","update","unlink","change_bg","add");
+		$modes = array("edit","update","unlink","change_bg","add","pay");
 		$pages = array("wh","wh_cat","store","meals","orders","ordersinfo","jobs","store_debits","workers_debits","workers","used_items");
 		//var_dump($mode,$page,$id);
 		(!in_array($page,$pages,TRUE)) ? exit(redirect("/")) : null;
@@ -56,10 +56,41 @@ class Input extends CI_Controller
 		{
 			$this->add_meals();
 		}
+		else if(strtoupper($page) == "ORDERS")
+		{
+			$this->add_orders();
+		}else if(strtoupper($page) == "USED_ITEMS")
+		{
+			$this->add_used_items();
+		}
+		else if(strtoupper($page) == "JOBS")
+		{
+			$this->add_jobs();
+		}
+		else if(strtoupper($page) == "WORKERS")
+		{
+			$this->add_workers();
+		}
+		else if(strtoupper($page) == "WORKERS_DEBITS")
+		{
+			$this->add_workers_debits();
+		}
+		else if(strtoupper($page) == "STORE_DEBITS")
+		{
+			$this->add_store_debits();
+		}
+
 	//	$T  = mb_strtolower("add_$page");
 	//	(method_exists($this->$T)) ? $T() : null;
 
 
+	}
+	public function pay($page,$id)
+	{
+		if(strtoupper($page) =="STORE_DEBITS")
+		{
+			$this->pay_store_debits($id);
+		}
 	}
 	public function edit($page,$id)
 	{
@@ -88,6 +119,18 @@ class Input extends CI_Controller
 		{
 			$this->edit_meals($id);
 		}
+		else if($page == "jobs")
+		{
+			$this->edit_jobs($id);
+		}
+		else if($page == "workers")
+		{
+			$this->update_workers($id);
+		}
+		else if($page == "store_debits")
+		{
+			$this->edit_store_debits($id);
+		}
 	}
 	public function unlink($page,$id)
 	{
@@ -112,6 +155,31 @@ class Input extends CI_Controller
 		}else if(strtoupper($page) == "MEALS")
 		{
 			$this->unlink_meals($id);
+		}
+		else if(strtoupper($page) == "ORDERS")
+		{
+			$this->unlink_orders($id);
+		}
+		else if(strtoupper($page)== "USED_ITEMS")
+		{
+				$this->unlink_used_items($id);
+		}
+		else if(strtoupper($page)== "JOBS")
+		{
+				$this->unlink_jobs($id);
+		}
+		else if(strtoupper($page)== "WORKERS")
+		{
+				$this->unlink_workers($id);
+		}
+		else if(strtoupper($page)== "WORKERS_DEBITS")
+		{
+				$this->unlink_workers_debits($id);
+		}
+
+		else if(strtoupper($page) == "STORE_DEBITS")
+		{
+			$this->unlink_store_debits($id);
 		}
 	}
 
@@ -263,14 +331,49 @@ class Input extends CI_Controller
 	$this->form_validation->set_rules("price" ,"  السعر", "min_length[1]|required");
 	$this->form_validation->set_rules("expdt" ,"  تاريخ الانتهاء", "min_length[1]|required");
 	$this->form_validation->set_rules("tp" ,"  اجمالي السعر", "min_length[1]|required");
+	$this->form_validation->set_rules("debit_from_values" ,"   قيمة المديونية", "min_length[0]");
 	if($this->form_validation->run())
 		{
+
 		$wid=$this->input->post("wid",TRUE);
+		$item = $this->tables->get_wh_by_id($wid);
+		$name = $item['ARNAME'] . ' - ' . $item['ENNAME'];
 		$qty=$this->input->post("qty",TRUE);
 		$price=$this->input->post("price",TRUE);
 		$expdt=$this->input->post("expdt",TRUE);
 		$tp=$this->input->post("tp",TRUE);
+		$EXP_AMT = 0;
+		$debit_form = json_decode($this->input->post("debit_from_values"));
+		if($debit_form->amt > 0)
+		{
+			$AMT = $debit_form -> amt;
+			$LENDER = $debit_form -> lender;
+			$PAYDATE = $debit_form -> paydate;
+			$DDESC = $debit_form-> ddesc;
+			if($tp == $AMT)
+			{
+				$EXP_AMT = 0;
+				$ok = $this->tables-> add_store($wid,$qty,$price,$tp,$expdt);
+				$ok2 = $this->tables->add_store_debits($LENDER,$AMT,$DDESC,$PAYDATE);
+				($ok && $ok2 ) ?  redirect("/Admin/store/all")  : redirect("/Admin/store/add");
+
+				// no expenses to be add
+			}else if($tp != $AMT  )
+			{
+				$EXP_AMT = $tp - $AMT;
+				$ok = $this->tables-> add_store($wid,$qty,$price,$tp,$expdt);
+				$ok2 = $this->tables->add_store_debits($LENDER,$AMT,$DDESC,$PAYDATE);
+				$ok3 = $this->tables->add_expenses($name,4,$EXP_AMT,"تم اضافة مشتروات");
+				($ok && $ok2 && $ok3) ?  redirect("/Admin/store/all")  : redirect("/Admin/store/add");
+
+			}
+
+
+		}else{
+			$EXP_AMT = $TP;
+		}
 		$ok = $this->tables-> add_store($wid,$qty,$price,$tp,$expdt);
+				$this->tables->add_expenses($name,4,$tp,"تم اضافة مشتروات");
 		($ok) ?  redirect("/Admin/store/all")  : redirect("/Admin/store/add");
 		}
 	else
@@ -371,17 +474,17 @@ class Input extends CI_Controller
 	*/#######################################################################################
 	public function  add_expenses()
 	{
-		echo output_parms();
+	//	echo output_parms();
 
 	$this->form_validation->set_rules("NAME" ,"  ", "min_length[1]|required");
 	$this->form_validation->set_rules("expt" ,"  ", "min_length[1]|required");
-	$this->form_validation->set_rules("ِamt" ,"  ", "min_length[1]|required");
+	$this->form_validation->set_rules("amt" ,"  ", "min_length[1]|required");
 	if($this->form_validation->run())
 		{
 
 		$name=$this->input->post("NAME",TRUE);
 		$expt=$this->input->post("expt",TRUE);
-		$ِamt=$this->input->post("ِamt",TRUE);
+		$amt=$this->input->post("amt",TRUE);
 
 		$ok = $this->tables->add_expenses($name,$expt,$amt);
 		($ok) ? redirect("/Admin/expenses/all") : redirect("/Admin/expenses/add");
@@ -483,12 +586,272 @@ class Input extends CI_Controller
 		($ok) ?  redirect("/Admin/meals/all") : redirect("/Admin/meals/unlink/$ID");
 	}
 	/*#######################################################################################
+	*	@@ ORDERS SECTION
+	*
+	*
+	*
+	*/#######################################################################################
+	public function add_orders()
+	{
+
+		$this->form_validation->set_rules("JSCartData" ," ", "min_length[1]|required");
+		if($this->form_validation->run()){
+		$JSCartData=json_decode($this->input->post("JSCartData",TRUE));
+		$total  =0;
+		foreach($JSCartData as $cartItem)
+			{
+				//var_dump($cartItem)
+				$name = $cartItem -> NAME;
+				$id = $cartItem->ID;
+				$price = $cartItem->PRICE;
+				$qty = $cartItem->QTY;
+				$tp  = $price * $qty;
+				$total += $tp;
+			}
+		$OID = $this->tables->add_orders($total);
+		$errors = 0;
+
+		foreach($JSCartData as $cartItem)
+			{
+
+				$MID = $cartItem->ID;
+				$PRICE = $cartItem->PRICE;
+				$QTY = $cartItem->QTY;
+				$TP  = $price * $qty;
+				$ok = $this->tables->add_orderinfo($OID,$MID,$QTY,$PRICE,$TP);
+				$mealData = $this->tables->get_meals_by_id($MID)[0];
+				($mealData['WHID'] > -1 ) ? $this->tables->add_useditems($mealData['WHID'],$QTY) : null;
+				$errors += ($ok) ?  0 : 1;
+
+			}
+			($errors == 0 ) ? redirect("/Admin/orders/info/$OID") : redirect("/Admin/orders/add/");
+		}
+		else{
+			redirect("/Admin/orders/add/");
+		}
+	}
+	public function unlink_orders($ID)
+	{
+		$ok = $this->tables->unlink_orders($ID);
+		($ok) ?  redirect("/Admin/orders/all") : redirect("Admin/orders/unlink/$ID");
+	}
+	/*#######################################################################################
+	*	@@ USED_ITEMS
+	*
+	*
+	*
+	*/#######################################################################################
+	public function add_used_items()
+	{
+
+		$this->form_validation->set_rules("WHID" ,"  ", "min_length[1]|required");
+		$this->form_validation->set_rules("QTY" ,"  ", "min_length[1]|required");
+
+		if($this->form_validation->run())
+		{
+			$WHID=$this->input->post("WHID",TRUE);
+			$QTY=$this->input->post("QTY",TRUE);
+			$ok = $this->MyTables->add_useditems($WHID,$QTY);
+			($ok) ? redirect("/Admin/used_items/all") : redirect("/Admin/used_items/add");
+		}else{
+			redirect("/Admin/used_items/add");
+		}
+	}
+	public function unlink_used_items($id)
+	{
+		if(isset($id) && strlen($id) >= 1)
+		{
+			$ok = $this->tables->unlink_used_items_by_id($id);
+			($ok) ? redirect("/Admin/used_items/all" ) : redirect("/Admin/unlink/$id");
+		}
+	}
+	/*#######################################################################################
+	*	@@ JOBS SECTION
+	*
+	*
+	*
+	*/#######################################################################################
+	public function add_jobs()
+	{
+
+		 $this->form_validation->set_rules("JTITLE" ," ", "min_length[1]|required");
+		 $this->form_validation->set_rules("SALARY" ," ", "min_length[1]|required");
+		 $this->form_validation->set_rules("PRI" ," ", "min_length[1]|required");
+		 if($this->form_validation->run())
+		 {
+			 $JTITLE=$this->input->post("JTITLE",TRUE);
+			 $SALARY=$this->input->post("SALARY",TRUE);
+			 $PRI=$this->input->post("PRI",TRUE);
+			 $ok =  $this->tables->add_jobs($JTITLE,$SALARY,$PRI);
+			 ($ok ) ?  redirect("/Admin/jobs/all") : redirect("/Admin/jobs/add");
+		 }
+
+	}
+	public function edit_jobs($id)
+	{
+		$this->form_validation->set_rules("JTITLE" ,"  ", "min_length[1]|required");
+		$this->form_validation->set_rules("SALARY" ,"  ", "min_length[1]|required");
+		$this->form_validation->set_rules("PRI" ,"  ", "min_length[1]|required");
+		if($this->form_validation->run()){
+
+			$JTITLE=$this->input->post("JTITLE",TRUE);
+			$SALARY=$this->input->post("SALARY",TRUE);
+			$PRI = $this->input->post("PRI",TRUE);
+			$ok = $this->tables->update_jobs($id,$JTITLE,$PRI,$SALARY);
+			($ok) ? redirect("/Admin/jobs/all") : redirect("/Admin/jobs/edit/$id");
+		}
+		redirect("/Admin/jobs/edit/$id");
+
+	}
+	public function unlink_jobs($id)
+	{
+		$ok = $this->tables->unlink_jobs($id);
+		($ok) ? redirect("/Admin/jobs/all") : redirect("/Admin/jobs/unlink/$id");
+	}
+	/*#######################################################################################
+	*	@@ WORKERS_ALL SECTION
+	*
+	*
+	*
+	*/#######################################################################################
+	public function add_workers()
+	{
+		$this->form_validation->set_rules("NAME" ," ", "min_length[1]|required");
+		 $this->form_validation->set_rules("TEL1" ," ", "min_length[1]|required");
+		  $this->form_validation->set_rules("TEL2" ," ", "min_length[1]|required");
+		  $this->form_validation->set_rules("JID" ," ", "min_length[1]|required");
+		  if($this->form_validation->run()){
+		   $NAME=$this->input->post("NAME",TRUE);
+		   $TEL1=$this->input->post("TEL1",TRUE);
+		   $TEL2=$this->input->post("TEL2",TRUE);
+		   $JID = $this->input->post("JID",TRUE);
+		   $ok = $this->tables->add_workers($NAME,$TEL1,$TEL2,$JID);
+
+		   ($ok) ? redirect("/Admin/workers/all") : redirect("/Admin/workers/add");
+
+	   }else{
+
+	   }
+	}
+	public function update_workers($id)
+	{
+		$this->form_validation->set_rules("NAME" ,"  ", "min_length[1]|required");
+		$this->form_validation->set_rules("JID" ,"  ", "min_length[1]|required");
+		$this->form_validation->set_rules("TEL1" ,"  ", "min_length[1]|required");
+		$this->form_validation->set_rules("TEL2" ,"  ", "min_length[1]|required");
+		if($this->form_validation->run())
+		{
+			$NAME=$this->input->post("NAME",TRUE);
+			$JID=$this->input->post("JID",TRUE);
+			$TEL1=$this->input->post("TEL1",TRUE);
+			$TEL2=$this->input->post("TEL2",TRUE);
+			$ok = $this->tables->update_workers($id,$NAME,$TEL1,$TEL2,$JID);
+			($ok) ? redirect("/Admin/workers/all" ) : redirect("Admin/workers/edit/$id");
+		}
+		else{
+			redirect("/Admin/workers/edit/$id");
+		}
+	}
+	public function unlink_workers($id)
+	{
+		$ok = $this->tables->unlink_workers($id);
+		($ok) ? redirect("/Admin/workers/all") : redirect("/Admin/workers/unlink/$id");
+	}
+
+	/*#######################################################################################
+	*	@@ WORKERS_DEBITS SECTION
+	*
+	*
+	*
+	*/#######################################################################################
+	public function add_workers_debits()
+	{
+			$this->form_validation->set_rules("WID" ," ", "min_length[1]|required");
+			 $this->form_validation->set_rules("PRICE" ," ", "min_length[1]|required");
+			 if($this->form_validation->run()){
+			 $WID=$this->input->post("WID",TRUE);
+			 $NAME =  $this->tables->get_workers_by_id($WID)[0]['NAME'];
+			  $PRICE=$this->input->post("PRICE",TRUE);
+			  $ok = $this->tables->add_workers_debits($WID,$PRICE);
+			  $ok2 = ($ok) ?  $this->tables->add_expenses($NAME,1,$PRICE,"تم اضافة سلفية جديدة") : FALSE;
+			  ($ok && $ok2) ? redirect("/Admin/workers_debits/all") : redirect("/Admin/workers_debit/add");
+		 }else{
+			 redirect("/Admin/workers_debits/add");
+		 }
+	}
+	public function unlink_workers_debits($ID)
+	{
+		$ok  = $this->tables->unlink_workers_debits($ID);
+		($ok ) ? redirect("/Admin/workers_debits/all") : redirect("/Admin/workers_debits/unlink/$ID");
+	}
+	/*#######################################################################################
+	*	@@ STORE DEBITS SECTION
+	*
+	*
+	*
+	*/#######################################################################################
+	public function add_store_debits()
+	{
+		  $this->form_validation->set_rules("LENDER" ," ", "min_length[1]|required");
+		  $this->form_validation->set_rules("AMT" ," ", "min_length[1]|required");
+		  $this->form_validation->set_rules("ddesc" ," ", "min_length[1]|required");
+		  $this->form_validation->set_rules("paydate" ," ", "min_length[1]|required");
+
+		  if($this->form_validation->run()){
+		   $LENDER=$this->input->post("LENDER",TRUE);
+		   $AMT=$this->input->post("AMT",TRUE);
+		   $ddesc=$this->input->post("ddesc",TRUE);
+		   $paydate=$this->input->post("paydate",TRUE);
+
+		   //var_dump($_POST);
+		   //die();
+		  $ok =  $this->tables->add_store_debits($LENDER,$AMT,$ddesc,$paydate);
+		  ($ok) ? redirect("/Admin/store_debits/all") : redirect("/Admin/store_debits/add");
+
+	   }
+	   redirect("/Admin/store_debits/add");
+	}
+
+	public function edit_store_debits($id)
+	{
+
+		$this->form_validation->set_rules("LENDER" ,"  ", "min_length[1]|required");
+		$this->form_validation->set_rules("AMT" ,"  ", "min_length[1]|required");
+		$this->form_validation->set_rules("DDESC" ,"  ", "min_length[1]|required");
+		$this->form_validation->set_rules("PAYDATE" ,"  ", "min_length[1]|required");
+		if($this->form_validation->run())
+		{
+			$OLDAMT = $this->tables->get_store_debits_by_id($id)[0]['AMT'];
+
+			$LENDER=$this->input->post("LENDER",TRUE);
+			$AMT=$this->input->post("AMT",TRUE);
+			$DDESC=$this->input->post("DDESC",TRUE);
+			$PAYDATE=$this->input->post("PAYDATE",TRUE);
+			$NEWAMT = $OLDAMT - $AMT;
+			$ok = $this->tables->update_store_debits($id,$LENDER,$AMT,$DDESC,$PAYDATE);
+		//	$this->add_expenses($NAME,2,$AMT,"تم اغلاق المديوينة");
+			$ok2 =$this->tables->add_expenses($LENDER,2,$NEWAMT,"تم سداد جزء من المديونية ");
+			($ok&&$ok2) ? redirect("/Admin/store_debits/all") : redirect("/Admin/store_debits/edit/$id");
+		}
+		redirect("/Admin/store_debits/edit/$id");
+	}
+	public function unlink_store_debits($id)
+	{
+		$ok = $this->tables->unlink_store_debits($id);
+		($ok) ? redirect("/Admin/store_debits/all") : redirect("/Admin/store_debits/unlink/$id");
+	}
+	public function pay_store_debits($id)
+	{
+			$ok = $this->tables->close_store_debits($id);
+			($ok) ? redirect("/Admin/store_debits/all") : redirect("/Admin/store_debits/pay/$id");
+	}
+
+	/*#######################################################################################
 	*	@@ MISC SECTION
 	*
 	*
 	*
 	*/#######################################################################################
-
 	public function change_bg($page,$id)
 	{
 		$page = strtoupper($page);

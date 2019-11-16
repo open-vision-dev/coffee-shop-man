@@ -13,6 +13,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			}
 
 	}
+	function date_convert($date_string)
+	{
+		$time = strtotime($date_string);
+	
+		$date = date("m/d/Y",$time);
+		return  $date;
+
+	}
 	function esc($data)
 	{
 		$me=&get_instance();

@@ -98,9 +98,38 @@ if(($_SESSION['lvl'] < 2) || !isset($this->session->userdata['lvl']))
           <a class="dropdown-item" href="<?php echo site_link_to('Admin/wh_cat/'); ?>">تصنيفات السلع</a>
           <a class="dropdown-item" href="<?php echo site_link_to('Admin/store/'); ?>">المخزن</a>
           <div class="dropdown-divider"></div>
+
+        </div>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle"
+        href="#" id="pagesDropdown"
+        role="button"
+         data-toggle="dropdown"
+          aria-haspopup="true" aria-expanded="false">
+          <i class="fas fa-fw fa-folder"></i>
+          <span>المخزن</span>
+        </a>
+        <div class="dropdown-menu" aria-labelledby="pagesDropdown">
+
+          <div class="dropdown-divider"></div>
           <h6 class="dropdown-header">الحسابات</h6>
           <a class="dropdown-item" href="/admin/expt/all">اصناف المصروفات</a>
           <a class="dropdown-item" href="/admin/expenses/all">المصروفات</a>
+          <div class="dropdown-divider"></div>
+          <h6 class="dropdown-header">الحسابات</h6>
+          <a class="dropdown-item" href="/admin/jobs/all">ا
+              الوظائف
+          </a>
+          <a class="dropdown-item" href="/admin/workers/all">
+            العمال
+          </a>
+          <a class="dropdown-item" href="/admin/workers_debits/all">
+ديون            العمال
+          </a>
+          <a class="dropdown-item" href="/admin/store_debits/all">
+ديون            المحل
+          </a>
         </div>
       </li>
       <li class="nav-item dropdown">
@@ -119,17 +148,14 @@ if(($_SESSION['lvl'] < 2) || !isset($this->session->userdata['lvl']))
           </a>
           <a class="dropdown-item" href="<?php echo site_link_to('Admin/meals/'); ?>">الماكولات</a>
           <a class="dropdown-item" href="<?php echo site_link_to('Admin/orders/'); ?>">الطلبات</a>
-          <a class="dropdown-item" href="<?php echo site_link_to('Admin/useditems/'); ?>">المواد المستخدمة</a>
-          <div class="dropdown-divider"></div>
-          <h6 class="dropdown-header">الحسابات</h6>
-          <a class="dropdown-item" href="/admin/expt/all">اصناف المصروفات</a>
-          <a class="dropdown-item" href="/admin/expenses/all">المصروفات</a>
+          <a class="dropdown-item" href="<?php echo site_link_to('Admin/used_items/'); ?>">المواد المستخدمة</a>
+
         </div>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="charts.html   ">
+        <a class="nav-link" href="/Admin/reports/all   ">
           <i class="fas fa-fw fa-chart-area"></i>
-          <span>Charts</span></a>
+          <span>Reports</span></a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="tables.html">

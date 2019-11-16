@@ -191,8 +191,97 @@ EDIT_FORM;
                 $wh_list_box .= "<option value='$V'>$N</option>\n";
             }
             $wh_list_box.="</select>";
-            $VIEW = <<<XMLV
 
+            $VIEW = <<<XMLV
+            <script type='text/JavaScript'>
+            function cashordebit()
+            {
+                var text=$('select#payment_type').val();
+                if(text == 'debit')
+                {
+
+                        var html = $('#hidden-content').html();
+                        $('#hidden-content').html('');
+                    $('#debit_form').html(html);
+                    $('#debit_form').removeAttr('hidden')
+
+                }else if (text == "cash")
+                {
+                    var def = {"amt":null,"paydate":null,"lender":null,"ddesc":null};
+                    $('debit_from_values').val(JSON.stringify(def));
+                }
+            }
+            function fill_lender_object()
+            {
+                 lender = $('#lender').val();
+                 amt = $('#amt').val();
+                var paydate = $('#paydate').val();
+                var ddesc = $('#ddesc').val();
+                var data = new Object();
+                data['amt']= amt;
+                data['paydate']=paydate;
+                data['lender']=lender;
+                data['ddesc']=ddesc;
+                $('#debit_form_values').val(JSON.stringify(data));
+            }
+            function tp_calc()
+            {
+                var qty = parseFloat($('#store_add_price').val());
+                var price = parseFloat($('#store_add_qty').val());
+                var total = qty * price;
+                $('#store_add_tp').val(total);
+
+            }
+            </script>
+            <style>
+            div.input-group{
+                margin-bottom:1.05rem;
+            }
+            </style>
+            <div id='hidden-content' hidden>
+                <div class='input-group'>
+                        <input type='Date' onchange='fill_lender_object()' required='required' id='paydate' aname='paydate' class='form-control input-lg' placeholder='التاريخ المتفق عليه للسداد'   />
+
+                        <div class='input-group-append'>
+
+                                <Div class='input-group-text'>
+                                    تاريخ السداد
+                                </div>
+                        </div>
+                </div><!-- input group --!>
+                <div class='input-group'>
+                        <input type='text' onchange='fill_lender_object()' required='required' id='lender' aname='lender' class='form-control input-lg' placeholder='اسم الدائن'   />
+
+                        <div class='input-group-append'>
+
+                                <Div class='input-group-text'>
+                                    اسم الدائن
+                                </div>
+                        </div>
+                </div><!-- input group --!>
+                <div class='input-group'>
+                        <input type='number' onchange='fill_lender_object()' step='(any)' required='required' id='amt' aname='amt' class='form-control input-lg' placeholder='مبلغ المديونية بالارقام '   />
+
+                        <div class='input-group-append'>
+
+                                <Div class='input-group-text'>
+                                    مبلغ المديونية
+                                </div>
+                        </div>
+                </div><!-- input group --!>
+
+                <div class='input-group'>
+                        <input type='text' onchange='fill_lender_object()' required='required' id='ddesc' aname='amt'  class='form-control input-lg' placeholder='هذه المديونية عبارة عن'   />
+
+                        <div class='input-group-append'>
+
+                                <Div class='input-group-text'>
+                                تفاصيل المديونية
+                                </div>
+                        </div>
+                </div><!-- input group --!>
+
+            </div>
             <form method='POST' action="/Input/add/store">
             <div>
 
@@ -228,7 +317,7 @@ EDIT_FORM;
                             </div>
                     </div>
                     <div class='input-group'>
-                            <input type='text' required='required' step='any' onchange='tp_calc();' name='tp' id='store_add_tp' disabled class='form-control input-lg' placeholder='$$$$$'   />
+                            <input type='text' required='required' step='any' onchange='tp_calc();' name='tp' id='store_add_tp'  class='form-control input-lg' placeholder='$$$$$'   />
 
                             <div class='input-group-append'>
 
@@ -238,12 +327,30 @@ EDIT_FORM;
                             </div>
                     </div>
                     <div class='input-group'>
+                            <select  onchange='cashordebit();' id='payment_type' class='select form-control' name=''>
+                            <option value='cash' >نقداً</option>
+                            <option value='debit' >دين</option>
+                            </select>
+                            <div class='input-group-append'>
+
+                                    <Div class='input-group-text'>
+                                    طريقة الدفع
+                                    </div>
+                            </div>
+                    </div>
+                    <div id='debit_form' >
+
+
+
+                    </div>
+                    <input type='hidden' id='debit_form_values'  name='debit_from_values'  />
+                    <div class='input-group'>
                             <input type='Date' required='required' name='expdt' class='form-control input-lg' placeholder='2020-05-23 10:55:33'   />
 
                             <div class='input-group-append'>
 
                                     <Div class='input-group-text'>
-                                          الوقت و التاريخ
+                                        انتهاء صلاحية المنتج
                                     </div>
                             </div>
                     </div>
@@ -271,7 +378,7 @@ XMLV;
             $PRICE = $A['PRICE'];
             $EXPDT  = $A['EXPDT'];
             $VIEW = <<<VIEW
-            <form method="POST" action="/Input/unlink/store/$id">
+            <form method="POST" action="/Input/unlink/store/$id" onsubmit='this.preventDefault();'>
                 <div class='container'>
                     <div class='row'>
                         <div class='col-md-6 col-xs-12 col-sm-12'>

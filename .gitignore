@@ -41,3 +41,5 @@ application/views/nppBackup/
 application/models/nppBackup/
 application/tmp/
 Custom.txt
+ErrorLog.txt
+.gitignore
