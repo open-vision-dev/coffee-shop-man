@@ -1,7 +1,7 @@
-Online Restaurant Management System
-Features :
-Inventory Managment
-Expenses
-HR & salaries
-Loan tracking 
-Staistics
+Online Restaurant Management System <br/>
+Features :<br/>
+Inventory Managment<br/>
+Expenses<br/>
+HR & salaries<br/>
+Loan tracking <br/>
+Staistics<br/>
